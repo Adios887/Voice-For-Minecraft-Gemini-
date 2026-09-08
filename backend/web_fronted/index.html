@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>Minecraft Proximity Voice Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- หน้าแรก: TCP Proxy Copy -->
+        <header class="card">
+            <h2>TCP Proxy Connection Address</h2>
+            <div class="proxy-box">
+                <code id="proxyAddr">/connect 127.0.0.1:3000</code>
+                <button onclick="copyProxy()">Copy Command</button>
+            </div>
+        </header>
+
+        <!-- เลือกโหมด: World / Server -->
+        <main class="card" id="modeSelector">
+            <h3>เลือกโหมดการเล่น (Select Mode)</h3>
+            <div class="btn-group">
+                <button onclick="selectMode('world')">World (โลกส่วนตัว)</button>
+                <button onclick="selectMode('server')">Server (เซิร์ฟเวอร์หลัก)</button>
+            </div>
+        </main>
+
+        <!-- Modal ยืนยัน PIN 6 หลัก & ชื่อ Player -->
+        <section class="card hidden" id="pinModal">
+            <h3 id="modalTitle">ยืนยันตัวตนเข้าร่วม</h3>
+            <input type="text" id="pinInput" placeholder="กรอกรหัส 6 หลักจากในเกม" maxlength="6">
+            <input type="text" id="playerInput" placeholder="พิมพ์ชื่อ Player ในเกม">
+            <button onclick="submitPIN()">ถัดไป (Confirm)</button>
+        </section>
+
+        <!-- แผงปรับแต่งเสียง (Audio Settings UI) -->
+        <section class="card hidden" id="audioDashboard">
+            <h3>🎛️ ระบบตั้งค่าเสียง (Audio Controls)</h3>
+            
+            <div class="control-group">
+                <label>วัดระดับความดังไมค์ (Mic Volume):</label>
+                <progress id="micMeter" value="0" max="100"></progress>
+                <input type="range" id="micGainSlider" min="0" max="100" value="80">
+            </div>
+
+            <div class="control-group">
+                <button id="muteBtn" onclick="toggleMute()">🎙️ เปิดไมค์ (Mic Active)</button>
+            </div>
+
+            <div class="control-group">
+                <label>ความดังลำโพง (Speaker Volume):</label>
+                <input type="range" id="speakerSlider" min="0" max="100" value="100">
+            </div>
+
+            <div class="control-group">
+                <label>ระยะการได้ยิน (Hearing Distance): <span id="hearVal">30</span> บล็อก</label>
+                <input type="range" id="hearingSlider" min="10" max="50" value="30">
+            </div>
+
+            <div class="control-group">
+                <label>ระยะการพูด (Speaking Distance): <span id="speakVal">15</span> บล็อก</label>
+                <input type="range" id="speakingSlider" min="5" max="30" value="15">
+            </div>
+
+            <!-- ปุ่มบังคับตามข้อกำหนด: Go Back และ Disconnect -->
+            <div class="action-footer">
+                <button class="btn-secondary" onclick="goBack()">Go Back (กลับ)</button>
+                <button class="btn-danger" onclick="disconnectVoice()">Disconnect (ตัดการเชื่อมต่อ)</button>
+            </div>
+        </section>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
