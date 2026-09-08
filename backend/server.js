@@ -1,57 +1,30 @@
+const express = require('express');
+const http = require('http');
 const WebSocket = require('ws');
-const net = require('net');
+const path = require('path');
 
-const WS_PORT = 3000;  // รับสายจาก Minecraft (/connect) และ Web
-const TCP_PORT = 4000; // TCP Proxy สำหรับ Web Renderer Engine
+const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
 
-const wss = new WebSocket.Server({ port: WS_PORT });
-const activeSessions = new Map(); // { playerName: { x, y, z, rotation, pin, room } }
-const pendingPins = new Map();    // { pin: playerName }
-const registeredRooms = new Map(); // { roomId: { type: 'world'|'server', host: playerName, ip, port } }
+// 1. ชี้ไปยังโฟลเดอร์หน้าเว็บ (เช็กชื่อโฟลเดอร์ใน GitHub ให้ตรง เช่น web_fronted)
+app.use(express.static(path.join(__dirname, 'web_fronted')));
 
-console.log(`[PROXY OS] WebSocket รันที่ ws://localhost:${WS_PORT}`);
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'web_fronted', 'index.html'));
+});
 
+// 2. ลอจิก WebSocket สำหรับ Minecraft และ Web App
 wss.on('connection', (ws) => {
+    console.log('[WS] Client connected');
+    
     ws.on('message', (message) => {
-        try {
-            const data = JSON.parse(message);
-
-            // 1. รับข้อมูลจาก Minecraft
-            if (data.type === 'mc_sync') {
-                data.players.forEach(p => {
-                    if (p.pin) pendingPins.set(p.pin, p.name);
-                    activeSessions.set(p.name, { ...p, ws });
-                });
-                broadcast({ type: 'positions_update', players: Array.from(activeSessions.values()) });
-            }
-
-            // 2. ยืนยันรหัส PIN 6 หลัก จากเว็บ
-            if (data.type === 'verify_pin') {
-                const { pin, playerName } = data;
-                const matchedPlayer = pendingPins.get(pin);
-
-                if (matchedPlayer && matchedPlayer.toLowerCase() === playerName.toLowerCase()) {
-                    ws.send(JSON.stringify({ status: 'success', message: 'เชื่อมต่อสำเร็จ!', player: matchedPlayer }));
-                    pendingPins.delete(pin);
-                } else {
-                    ws.send(JSON.stringify({ status: 'error', message: 'รหัส 6 หลัก หรือชื่อ Player ไม่ถูกต้อง' }));
-                }
-            }
-
-            // 3. ลงทะเบียนและดึงรายชื่อห้อง (World/Server Host)
-            if (data.type === 'register_room') {
-                registeredRooms.set(data.roomId, data.roomData);
-                broadcast({ type: 'rooms_update', rooms: Array.from(registeredRooms.entries()) });
-            }
-        } catch (err) {
-            console.error('[Error]:', err.message);
-        }
+        // ... โค้ดรับส่งข้อมูล WebSocket เดิมของคุณ ...
     });
 });
 
-function broadcast(payload) {
-    const msg = JSON.stringify(payload);
-    wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN) client.send(msg);
-    });
-        }
+// 3. Render จะส่งค่า process.env.PORT มาให้โดยอัตโนมัติ
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`[SYSTEM] Server running on port ${PORT}`);
+});
