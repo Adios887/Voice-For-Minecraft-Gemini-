@@ -3,64 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Minecraft Voice Chat</title>
+    <title>Minecraft Proximity Voice Chat</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <!-- Header & Status -->
-        <header class="header">
-            <div class="logo-title">
-                <span class="icon">🎙️</span>
-                <h1>Proximity Voice</h1>
+        
+        <!-- STEP 1 & 2: เลือกการเชื่อมต่อและกรอกข้อมูล -->
+        <div id="stepConnection" class="card">
+            <!-- กล่องแสดงคำสั่งไปวางในเกม -->
+            <div class="cmd-box">
+                <span class="cmd-title">📌 รหัสไปวางในเกม</span>
+                <code id="cmdText">/connect voice-for-minecraft-gemini-ln78.onrender.com</code>
+                <button type="button" id="copyCmdBtn" class="btn-copy">📋 คัดลอก</button>
             </div>
-            <div id="connectionStatus" class="status-badge offline">
-                <span class="status-dot"></span>
-                <span id="statusText">กำลังเชื่อมต่อ...</span>
+
+            <h2 class="title">เลือกการเชื่อมต่อ</h2>
+
+            <!-- ตัวเลือกหลัก: โลกส่วนตัว / เซิร์ฟเวอร์ -->
+            <div class="button-grid">
+                <button type="button" id="btnModeLocal" class="btn-select">โลกส่วนตัว</button>
+                <button type="button" id="btnModeServer" class="btn-select">เซิร์ฟเวอร์</button>
             </div>
-        </header>
 
-        <!-- Main Card -->
-        <main class="card">
-            <!-- Step 1: Verification -->
-            <section class="section">
-                <label for="playerName" class="input-label">ชื่อผู้เล่นใน Minecraft</label>
-                <input type="text" id="playerName" class="custom-input" placeholder="กรอกชื่อในเกม เช่น Steve..." autocomplete="off">
+            <!-- ตัวเลือกรอง (จะแสดงเมื่อเลือกตัวเลือกหลัก) -->
+            <div id="subOptionsLocal" class="button-grid hidden">
+                <button type="button" id="btnLocalJoin" class="btn-sub-select">เข้าร่วมโลก</button>
+                <button type="button" id="btnLocalHost" class="btn-sub-select">สร้างโลก</button>
+            </div>
 
-                <label for="pinInput" class="input-label">รหัสยืนยัน PIN (6 หลัก)</label>
-                <div class="pin-group">
-                    <input type="number" id="pinInput" class="custom-input pin-field" placeholder="000000" maxlength="6">
-                    <button type="button" id="copyBtn" class="btn btn-secondary">📋 คัดลอก</button>
+            <div id="subOptionsServer" class="button-grid hidden">
+                <button type="button" id="btnServerJoin" class="btn-sub-select">เข้าร่วมเซิร์ฟ</button>
+                <button type="button" id="btnServerHost" class="btn-sub-select">สร้างเซิร์ฟ</button>
+            </div>
+
+            <!-- ฟอร์มกรอกข้อมูลแบบ Dynamic -->
+            <div id="inputForm" class="form-container hidden">
+                <!-- IP & Port (แสดงเฉพาะเมื่อเลือกเกี่ยวกับเซิร์ฟเวอร์) -->
+                <div id="groupServerAddr" class="input-group hidden">
+                    <div class="field">
+                        <label>IP</label>
+                        <input type="text" id="inputIP" placeholder="เช่น 127.0.0.1 หรือ play.server.com">
+                    </div>
+                    <div class="field">
+                        <label>Port</label>
+                        <input type="number" id="inputPort" placeholder="เช่น 25565 หรือ 19132">
+                    </div>
                 </div>
-            </section>
 
-            <!-- Step 2: Controls -->
-            <section class="section action-area">
-                <button type="button" id="connectBtn" class="btn btn-primary btn-large">
-                    ⚡ เชื่อมต่อเสียงและระบบ
-                </button>
-                <div id="messageBox" class="message-box hidden"></div>
-            </section>
-
-            <!-- Status Indicator Grid -->
-            <section class="status-grid">
-                <div class="status-card">
-                    <span class="status-title">ไมโครโฟน</span>
-                    <span id="micStatus" class="status-value red">ปิดอยู่</span>
+                <!-- ชื่อ Player เจ้าของเซิร์ฟ / Host -->
+                <div id="groupHostPlayer" class="field hidden">
+                    <label>ชื่อ Player เจ้าของเซิร์ฟ</label>
+                    <input type="text" id="inputHostName" placeholder="กรอกชื่อเจ้าของห้อง...">
                 </div>
-                <div class="status-card">
-                    <span class="status-title">สถานะในเกม</span>
-                    <span id="gameStatus" class="status-value yellow">รอยืนยัน</span>
-                </div>
-            </section>
-        </main>
 
-        <footer class="footer">
-            <p>Minecraft Proximity Voice System v1.0</p>
-        </footer>
+                <!-- ชื่อ Player ผู้ใช้งาน -->
+                <div id="groupPlayerName" class="field hidden">
+                    <label>ชื่อ Player</label>
+                    <input type="text" id="inputPlayerName" placeholder="กรอกชื่อของคุณในเกม...">
+                </div>
+
+                <!-- รหัส 6 หลัก (PIN) -->
+                <div id="groupPin" class="field hidden">
+                    <label>รหัส 6 หลัก (PIN จากคำสั่ง !pin)</label>
+                    <input type="number" id="inputPin" placeholder="_ _ _ _ _ _" maxlength="6">
+                </div>
+            </div>
+
+            <!-- ปุ่มเชื่อมต่อหลัก -->
+            <button type="button" id="btnSubmitConnect" class="btn-primary btn-large">เชื่อมต่อ</button>
+            <div id="statusMessage" class="message-box hidden"></div>
+        </div>
+
+        <!-- STEP 3: หน้าควบคุมเสียง (เมื่อเชื่อมต่อสำเร็จ) -->
+        <div id="stepVoiceDashboard" class="card hidden">
+            <!-- ลำโพง/ไอคอนเสียง top visual -->
+            <div class="speaker-visual">
+                <span class="speaker-icon">🔊</span>
+                <div class="sound-waves">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+
+            <!-- สวิตช์เปิด/ปิดไมค์ -->
+            <div class="mic-toggle-section">
+                <span class="mic-label">ไมค์</span>
+                <button type="button" id="btnToggleMic" class="btn-toggle active">เปิด</button>
+            </div>
+
+            <div class="slider-section">
+                <h3 class="section-title">เสียง</h3>
+                <div class="slider-group">
+                    <label>พูด <span id="valVoiceInput">100%</span></label>
+                    <input type="range" id="sliderVoiceInput" min="0" max="200" value="100">
+                </div>
+                <div class="slider-group">
+                    <label>ได้ยิน <span id="valVoiceOutput">100%</span></label>
+                    <input type="range" id="sliderVoiceOutput" min="0" max="200" value="100">
+                </div>
+            </div>
+
+            <div class="slider-section">
+                <h3 class="section-title">ระยะ</h3>
+                <div class="slider-group">
+                    <label>พูด <span id="valDistTalk">20 บล็อก</span></label>
+                    <input type="range" id="sliderDistTalk" min="5" max="100" value="20">
+                </div>
+                <div class="slider-group">
+                    <label>ได้ยิน <span id="valDistHear">20 บล็อก</span></label>
+                    <input type="range" id="sliderDistHear" min="5" max="100" value="20">
+                </div>
+            </div>
+
+            <button type="button" id="btnDisconnect" class="btn-danger">ยกเลิกการเชื่อมต่อ</button>
+        </div>
+
     </div>
-
     <script src="app.js"></script>
 </body>
 </html>
