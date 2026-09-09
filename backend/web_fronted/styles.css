@@ -1,54 +1,211 @@
+:root {
+    --bg-color: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Kanit', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
 body {
-    background-color: #0f172a;
-    color: #f8fafc;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+    color: var(--text-main);
+    min-height: 100vh;
     display: flex;
     justify-content: center;
-    padding: 20px;
+    align-items: center;
+    padding: 16px;
 }
 
-.card {
-    background: #1e293b;
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    width: 420px;
+.container {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-.proxy-box {
+/* Header */
+.header {
     display: flex;
     justify-content: space-between;
-    background: #090d16;
-    padding: 10px;
-    border-radius: 6px;
+    align-items: center;
+    padding: 8px 4px;
 }
 
-.control-group {
-    margin-bottom: 18px;
+.logo-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-title h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* Status Badge */
+.status-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--warning);
+}
+
+.status-badge.online .status-dot { background: var(--success); }
+.status-badge.offline .status-dot { background: var(--danger); }
+
+/* Main Card */
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Form Inputs */
+.section {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.action-footer {
+.input-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.custom-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.custom-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.pin-group {
     display: flex;
-    justify-content: space-between;
-    margin-top: 24px;
-    padding-top: 16px;
-    border-top: 1px solid #334155;
+    gap: 8px;
 }
 
-button {
-    background: #3b82f6;
-    color: white;
+.pin-field {
+    letter-spacing: 4px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Buttons */
+.btn {
     border: none;
-    padding: 10px 16px;
-    border-radius: 6px;
+    border-radius: 12px;
+    font-weight: 500;
     cursor: pointer;
-    font-weight: bold;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-.btn-secondary { background: #64748b; }
-.btn-danger { background: #ef4444; }
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+    background: var(--primary-hover);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    padding: 0 16px;
+    white-space: nowrap;
+}
+
+.btn-secondary:active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-large {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* Message & Grid */
+.message-box {
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.message-box.success { background: rgba(34, 197, 94, 0.15); color: var(--success); }
+.message-box.error { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 .hidden { display: none; }
+
+.status-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.status-card {
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid var(--card-border);
+    padding: 12px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.status-title { font-size: 0.75rem; color: var(--text-muted); }
+.status-value { font-size: 0.9rem; font-weight: 600; }
+.status-value.red { color: var(--danger); }
+.status-value.green { color: var(--success); }
+.status-value.yellow { color: var(--warning); }
+
+.footer { text-align: center; font-size: 0.75rem; color: var(--text-muted); }
