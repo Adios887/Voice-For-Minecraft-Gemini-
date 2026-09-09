@@ -7,24 +7,59 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-// 1. ชี้ไปยังโฟลเดอร์หน้าเว็บ (เช็กชื่อโฟลเดอร์ใน GitHub ให้ตรง เช่น web_fronted)
+// ชี้ไปยังโฟลเดอร์หน้าเว็บ Frontend
 app.use(express.static(path.join(__dirname, 'web_fronted')));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'web_fronted', 'index.html'));
 });
 
-// 2. ลอจิก WebSocket สำหรับ Minecraft และ Web App
+// หน่วยความจำระบบ
+const activeSessions = new Map();
+const pendingPins = new Map();
+
 wss.on('connection', (ws) => {
     console.log('[WS] Client connected');
-    
+
     ws.on('message', (message) => {
-        // ... โค้ดรับส่งข้อมูล WebSocket เดิมของคุณ ...
+        try {
+            const data = JSON.parse(message);
+
+            // 1. รับข้อมูลจาก Minecraft (/connect)
+            if (data.type === 'mc_sync' || data.header) {
+                // จัดเก็บ/กระจายพิกัด
+                broadcast({ type: 'positions_update', data: data });
+            }
+
+            // 2. รับยืนยัน PIN จากหน้าเว็บ
+            if (data.type === 'verify_pin') {
+                const { pin, playerName } = data;
+                const matchedPlayer = pendingPins.get(pin);
+
+                if (matchedPlayer && matchedPlayer.toLowerCase() === playerName.toLowerCase()) {
+                    ws.send(JSON.stringify({ status: 'success', player: matchedPlayer }));
+                    pendingPins.delete(pin);
+                } else {
+                    ws.send(JSON.stringify({ status: 'error', message: 'รหัส 6 หลักไม่ถูกต้อง' }));
+                }
+            }
+        } catch (err) {
+            // รองรับ Plain Text จาก Minecraft Command
+        }
     });
+
+    ws.on('close', () => console.log('[WS] Client disconnected'));
 });
 
-// 3. Render จะส่งค่า process.env.PORT มาให้โดยอัตโนมัติ
+function broadcast(payload) {
+    const msg = JSON.stringify(payload);
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) client.send(msg);
+    });
+}
+
+// ใช้ Port ที่ Render กำหนดให้อัตโนมัติ
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`[SYSTEM] Server running on port ${PORT}`);
+    console.log(`[SERVER] Online on port ${PORT}`);
 });
