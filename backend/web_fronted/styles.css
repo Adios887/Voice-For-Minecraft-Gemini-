@@ -1,211 +1,57 @@
 :root {
-    --bg-color: #0f172a;
-    --card-bg: rgba(30, 41, 59, 0.7);
-    --card-border: rgba(255, 255, 255, 0.1);
-    --primary: #3b82f6;
-    --primary-hover: #2563eb;
-    --success: #22c55e;
+    --bg-main: #0b0f19;
+    --card-bg: #161f30;
+    --card-border: #2a374e;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --active: #10b981;
     --danger: #ef4444;
-    --warning: #f59e0b;
-    --text-main: #f8fafc;
+    --text-white: #ffffff;
     --text-muted: #94a3b8;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Kanit', sans-serif;
-    -webkit-tap-highlight-color: transparent;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kanit', sans-serif; }
+body { background: var(--bg-main); color: var(--text-white); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 16px; }
+.container { width: 100%; max-width: 420px; }
 
-body {
-    background-color: var(--bg-color);
-    background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
-    color: var(--text-main);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 16px;
-}
+.card { background: var(--card-bg); border: 2px solid var(--card-border); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.hidden { display: none !important; }
 
-.container {
-    width: 100%;
-    max-width: 440px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
+/* กล่องคำสั่ง */
+.cmd-box { background: #0f172a; border: 1px dashed var(--primary); padding: 12px; border-radius: 12px; display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center; }
+.cmd-title { font-size: 0.85rem; color: var(--text-muted); }
+.cmd-box code { font-family: monospace; color: #38bdf8; font-size: 0.8rem; word-break: break-all; }
+.btn-copy { background: rgba(255,255,255,0.1); border: none; color: white; padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; }
 
-/* Header */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 4px;
-}
+.title { text-align: center; font-weight: 600; font-size: 1.3rem; margin-top: 4px; }
 
-.logo-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+/* ตัวเลือกปุ่ม */
+.button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn-select, .btn-sub-select { background: #1e293b; border: 2px solid var(--card-border); color: var(--text-white); padding: 14px; border-radius: 12px; font-size: 1rem; cursor: pointer; font-weight: 600; transition: 0.2s; }
+.btn-select.active, .btn-sub-select.active { background: var(--primary); border-color: #60a5fa; }
 
-.logo-title h1 {
-    font-size: 1.25rem;
-    font-weight: 600;
-}
+/* ฟอร์มกรอกข้อมูล */
+.form-container { display: flex; flex-direction: column; gap: 12px; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; }
+.input-group { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label { font-size: 0.85rem; color: var(--text-muted); }
+.field input { background: #0f172a; border: 1px solid var(--card-border); border-radius: 8px; padding: 10px 12px; color: white; font-size: 0.95rem; outline: none; }
+.field input:focus { border-color: var(--primary); }
 
-/* Status Badge */
-.status-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--card-border);
-}
+.btn-primary { background: var(--primary); border: none; color: white; border-radius: 12px; font-size: 1.1rem; font-weight: 600; padding: 14px; cursor: pointer; transition: 0.2s; }
+.btn-primary:hover { background: var(--primary-hover); }
 
-.status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--warning);
-}
+/* หน้าควบคุม Dashboard เสียง */
+.speaker-visual { display: flex; justify-content: center; align-items: center; font-size: 3rem; margin: 10px 0; }
+.mic-toggle-section { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 12px 16px; border-radius: 12px; }
+.btn-toggle { background: #334155; border: none; color: white; padding: 8px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+.btn-toggle.active { background: var(--active); }
 
-.status-badge.online .status-dot { background: var(--success); }
-.status-badge.offline .status-dot { background: var(--danger); }
+.slider-section { display: flex; flex-direction: column; gap: 10px; }
+.section-title { font-size: 1rem; color: #60a5fa; border-bottom: 1px solid var(--card-border); padding-bottom: 4px; }
+.slider-group { display: flex; flex-direction: column; gap: 4px; }
+.slider-group label { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); }
+.slider-group input[type=range] { width: 100%; accent-color: var(--primary); cursor: pointer; }
 
-/* Main Card */
-.card {
-    background: var(--card-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--card-border);
-    border-radius: 24px;
-    padding: 24px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* Form Inputs */
-.section {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.input-label {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-}
-
-.custom-input {
-    width: 100%;
-    padding: 12px 16px;
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    color: var(--text-main);
-    font-size: 0.95rem;
-    outline: none;
-    transition: all 0.2s ease;
-}
-
-.custom-input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-}
-
-.pin-group {
-    display: flex;
-    gap: 8px;
-}
-
-.pin-field {
-    letter-spacing: 4px;
-    font-weight: 600;
-    text-align: center;
-}
-
-/* Buttons */
-.btn {
-    border: none;
-    border-radius: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.btn-primary {
-    background: var(--primary);
-    color: white;
-}
-
-.btn-primary:active {
-    transform: scale(0.98);
-    background: var(--primary-hover);
-}
-
-.btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-main);
-    padding: 0 16px;
-    white-space: nowrap;
-}
-
-.btn-secondary:active {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.btn-large {
-    width: 100%;
-    padding: 14px;
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-/* Message & Grid */
-.message-box {
-    padding: 10px;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    text-align: center;
-}
-
-.message-box.success { background: rgba(34, 197, 94, 0.15); color: var(--success); }
-.message-box.error { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
-.hidden { display: none; }
-
-.status-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.status-card {
-    background: rgba(15, 23, 42, 0.4);
-    border: 1px solid var(--card-border);
-    padding: 12px;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.status-title { font-size: 0.75rem; color: var(--text-muted); }
-.status-value { font-size: 0.9rem; font-weight: 600; }
-.status-value.red { color: var(--danger); }
-.status-value.green { color: var(--success); }
-.status-value.yellow { color: var(--warning); }
-
-.footer { text-align: center; font-size: 0.75rem; color: var(--text-muted); }
+.btn-danger { background: var(--danger); border: none; color: white; border-radius: 12px; font-size: 1rem; font-weight: 600; padding: 12px; cursor: pointer; margin-top: 10px; }
+.message-box { padding: 10px; border-radius: 8px; text-align: center; font-size: 0.85rem; background: rgba(239, 68, 68, 0.2); color: var(--danger); }
