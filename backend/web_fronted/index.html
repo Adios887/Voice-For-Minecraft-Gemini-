@@ -2,73 +2,65 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>Minecraft Proximity Voice Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Minecraft Voice Chat</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
-        <!-- หน้าแรก: TCP Proxy Copy -->
-        <header class="card">
-            <h2>TCP Proxy Connection Address</h2>
-            <div class="proxy-box">
-                <code id="proxyAddr">/connect 127.0.0.1:3000</code>
-                <button onclick="copyProxy()">Copy Command</button>
+    <div class="container">
+        <!-- Header & Status -->
+        <header class="header">
+            <div class="logo-title">
+                <span class="icon">🎙️</span>
+                <h1>Proximity Voice</h1>
+            </div>
+            <div id="connectionStatus" class="status-badge offline">
+                <span class="status-dot"></span>
+                <span id="statusText">กำลังเชื่อมต่อ...</span>
             </div>
         </header>
 
-        <!-- เลือกโหมด: World / Server -->
-        <main class="card" id="modeSelector">
-            <h3>เลือกโหมดการเล่น (Select Mode)</h3>
-            <div class="btn-group">
-                <button onclick="selectMode('world')">World (โลกส่วนตัว)</button>
-                <button onclick="selectMode('server')">Server (เซิร์ฟเวอร์หลัก)</button>
-            </div>
+        <!-- Main Card -->
+        <main class="card">
+            <!-- Step 1: Verification -->
+            <section class="section">
+                <label for="playerName" class="input-label">ชื่อผู้เล่นใน Minecraft</label>
+                <input type="text" id="playerName" class="custom-input" placeholder="กรอกชื่อในเกม เช่น Steve..." autocomplete="off">
+
+                <label for="pinInput" class="input-label">รหัสยืนยัน PIN (6 หลัก)</label>
+                <div class="pin-group">
+                    <input type="number" id="pinInput" class="custom-input pin-field" placeholder="000000" maxlength="6">
+                    <button type="button" id="copyBtn" class="btn btn-secondary">📋 คัดลอก</button>
+                </div>
+            </section>
+
+            <!-- Step 2: Controls -->
+            <section class="section action-area">
+                <button type="button" id="connectBtn" class="btn btn-primary btn-large">
+                    ⚡ เชื่อมต่อเสียงและระบบ
+                </button>
+                <div id="messageBox" class="message-box hidden"></div>
+            </section>
+
+            <!-- Status Indicator Grid -->
+            <section class="status-grid">
+                <div class="status-card">
+                    <span class="status-title">ไมโครโฟน</span>
+                    <span id="micStatus" class="status-value red">ปิดอยู่</span>
+                </div>
+                <div class="status-card">
+                    <span class="status-title">สถานะในเกม</span>
+                    <span id="gameStatus" class="status-value yellow">รอยืนยัน</span>
+                </div>
+            </section>
         </main>
 
-        <!-- Modal ยืนยัน PIN 6 หลัก & ชื่อ Player -->
-        <section class="card hidden" id="pinModal">
-            <h3 id="modalTitle">ยืนยันตัวตนเข้าร่วม</h3>
-            <input type="text" id="pinInput" placeholder="กรอกรหัส 6 หลักจากในเกม" maxlength="6">
-            <input type="text" id="playerInput" placeholder="พิมพ์ชื่อ Player ในเกม">
-            <button onclick="submitPIN()">ถัดไป (Confirm)</button>
-        </section>
-
-        <!-- แผงปรับแต่งเสียง (Audio Settings UI) -->
-        <section class="card hidden" id="audioDashboard">
-            <h3>🎛️ ระบบตั้งค่าเสียง (Audio Controls)</h3>
-            
-            <div class="control-group">
-                <label>วัดระดับความดังไมค์ (Mic Volume):</label>
-                <progress id="micMeter" value="0" max="100"></progress>
-                <input type="range" id="micGainSlider" min="0" max="100" value="80">
-            </div>
-
-            <div class="control-group">
-                <button id="muteBtn" onclick="toggleMute()">🎙️ เปิดไมค์ (Mic Active)</button>
-            </div>
-
-            <div class="control-group">
-                <label>ความดังลำโพง (Speaker Volume):</label>
-                <input type="range" id="speakerSlider" min="0" max="100" value="100">
-            </div>
-
-            <div class="control-group">
-                <label>ระยะการได้ยิน (Hearing Distance): <span id="hearVal">30</span> บล็อก</label>
-                <input type="range" id="hearingSlider" min="10" max="50" value="30">
-            </div>
-
-            <div class="control-group">
-                <label>ระยะการพูด (Speaking Distance): <span id="speakVal">15</span> บล็อก</label>
-                <input type="range" id="speakingSlider" min="5" max="30" value="15">
-            </div>
-
-            <!-- ปุ่มบังคับตามข้อกำหนด: Go Back และ Disconnect -->
-            <div class="action-footer">
-                <button class="btn-secondary" onclick="goBack()">Go Back (กลับ)</button>
-                <button class="btn-danger" onclick="disconnectVoice()">Disconnect (ตัดการเชื่อมต่อ)</button>
-            </div>
-        </section>
+        <footer class="footer">
+            <p>Minecraft Proximity Voice System v1.0</p>
+        </footer>
     </div>
+
     <script src="app.js"></script>
 </body>
 </html>
